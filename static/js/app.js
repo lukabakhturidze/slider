@@ -61,22 +61,19 @@ wrapper.addEventListener('mouseenter', (e) => {
     isOver = true;
 })
 wrapper.addEventListener('mousemove', (e) => {
-    if(isDragging & isOver){
+    if(isDragging && isOver && (dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
         currentDragDistance = (startX - e.clientX)
-        if((dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
-            wrapper.scrollLeft = dragDistance + currentDragDistance
-        }
-        else if((dragDistance + currentDragDistance) < 0){
-            dragDistance = 0;
-            currentDragDistance = 0;
-            startX = e.clientX;
-        }
-        else if((dragDistance + currentDragDistance) > scrollLine){
-            dragDistance = scrollLine;
-            currentDragDistance = 0;
-            startX = e.clientX;
-        }
-
+        wrapper.scrollLeft = dragDistance + currentDragDistance
+    }
+    else if((dragDistance + currentDragDistance) < 0){
+        dragDistance = 0;
+        currentDragDistance = 0;
+        startX = e.clientX;
+    }
+    else if((dragDistance + currentDragDistance) > scrollLine){
+        dragDistance = scrollLine;
+        currentDragDistance = 0;
+        startX = e.clientX;
     }
 })
 wrapper.addEventListener('mouseleave', (e) => {
