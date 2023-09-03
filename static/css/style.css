@@ -58,7 +58,6 @@ main{
     grid-auto-columns: calc((100% / 3) - ((var(--carousel-gap) * 2) / 3));
     grid-template-rows:auto;
     column-gap: var(--carousel-gap);
-    cursor: pointer;
 }
 .carousel .card{
     height: 100%;

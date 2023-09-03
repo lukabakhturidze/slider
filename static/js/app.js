@@ -17,12 +17,11 @@ buttons.forEach((button, index) => {
         isOverButton = true;
         if(index == 0){
             directionChecker = false;
-            console.log(directionChecker);
         }
         else if(index == 1){
             directionChecker = true;
-            console.log(directionChecker);
         }
+        buttonActiveHandler();
     })
     button.addEventListener('mouseup', () => {
         buttonHoldChecker = false;
@@ -48,9 +47,21 @@ setInterval(function() {
     else if(dragDistance > scrollLine){
         dragDistance = scrollLine;
     }
+    buttonActiveHandler();
 }, 5)
 
-
+function buttonActiveHandler(){
+    if(dragDistance <= 0){
+        buttons[0].disabled = true;
+        buttons[1].disabled = false;
+    }else if(dragDistance >= scrollLine){
+        buttons[1].disabled = true;
+        buttons[0].disabled = false;
+    }else{
+        buttons[1].disabled = false;
+        buttons[0].disabled = false;
+    }
+}
 
 
 wrapper.addEventListener('mousedown', (e) => {
@@ -64,16 +75,19 @@ wrapper.addEventListener('mousemove', (e) => {
     if(isDragging && isOver && (dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
         currentDragDistance = (startX - e.clientX)
         wrapper.scrollLeft = dragDistance + currentDragDistance
+        buttonActiveHandler();
     }
     else if((dragDistance + currentDragDistance) < 0){
         dragDistance = 0;
         currentDragDistance = 0;
         startX = e.clientX;
+        buttonActiveHandler();
     }
     else if((dragDistance + currentDragDistance) > scrollLine){
         dragDistance = scrollLine;
         currentDragDistance = 0;
         startX = e.clientX;
+        buttonActiveHandler();
     }
 })
 wrapper.addEventListener('mouseleave', (e) => {
