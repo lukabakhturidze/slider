@@ -24,7 +24,7 @@ buttons.forEach((button, index) => {
     button.addEventListener('mouseleave', buttonMouseleave);
     button.addEventListener('touchstart', function(e){
         buttonMousedownHandler(index);
-    });
+    }, {passive : true});
     button.addEventListener('touchend', buttonMouseUp);
 })
 function buttonMousedownHandler(index){
@@ -153,7 +153,7 @@ wrapper.addEventListener('touchstart', (e) => {
     isDragging = true;
     isOver = true;
     startX = e.touches[0].clientX;
-})
+}, {passive : true})
 
 wrapper.addEventListener('touchmove', (e) => {
     if(isDragging && isOver && (dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
@@ -173,7 +173,7 @@ wrapper.addEventListener('touchmove', (e) => {
         startX = e.touches[0].clientX;
         buttonActiveHandler();
     }
-})
+}, {passive : true})
 wrapper.addEventListener('touchend', (e) => {
     isDragging = false;
     if(isOver){
