@@ -1,3 +1,4 @@
+//mouse drag variables>
 const wrapper = document.querySelector(".wrapper");
 const buttons = document.querySelectorAll(".buttons-wrapper button");
 let isDragging = false;
@@ -6,30 +7,44 @@ let dragDistance = 0;
 let currentDragDistance = 0;
 let isOver = false;
 let scrollLine = wrapper.scrollWidth - wrapper.clientWidth;
+//<mouse drag variables
 
+//buttons drag variables>
 let buttonHoldChecker = false;
 let isOverButton = false;
 let directionChecker = false;
+//<buttons drag variables
 
+//for buttons computer version>
 buttons.forEach((button, index) => {
     button.addEventListener('mousedown', () => {
-        buttonHoldChecker = true;
-        isOverButton = true;
-        if(index == 0){
-            directionChecker = false;
-        }
-        else if(index == 1){
-            directionChecker = true;
-        }
-        buttonActiveHandler();
+        buttonMousedownHandler(index);
     })
-    button.addEventListener('mouseup', () => {
-        buttonHoldChecker = false;
-    })
-    button.addEventListener('mouseleave', () => {
-        isOverButton = false;
-    })
+    button.addEventListener('mouseup', buttonMouseUp);
+    button.addEventListener('mouseleave', buttonMouseleave);
+    button.addEventListener('touchstart', function(e){
+        buttonMousedownHandler(index);
+    });
+    button.addEventListener('touchend', buttonMouseUp);
 })
+function buttonMousedownHandler(index){
+    scrollLine = wrapper.scrollWidth - wrapper.clientWidth;
+    buttonHoldChecker = true;
+    isOverButton = true;
+    if(index == 0){
+        directionChecker = false;
+    }
+    else if(index == 1){
+        directionChecker = true;
+    }
+    buttonActiveHandler();
+}
+function buttonMouseUp(){
+    buttonHoldChecker = false;
+}
+function buttonMouseleave(){
+    isOverButton = false;
+}
 
 setInterval(function() {
     if(buttonHoldChecker == true && isOverButton == true & dragDistance >= 0 & dragDistance <= scrollLine){
@@ -62,16 +77,27 @@ function buttonActiveHandler(){
         buttons[0].disabled = false;
     }
 }
+//<for buttons computer version
 
 
-wrapper.addEventListener('mousedown', (e) => {
+
+
+
+//for mouse drag computer version>
+wrapper.addEventListener('mousedown', mousedownHandler);
+function mousedownHandler(e){
+    scrollLine = wrapper.scrollWidth - wrapper.clientWidth;
     isDragging = true;
     startX = e.clientX;
-})
-wrapper.addEventListener('mouseenter', (e) => {
+}
+
+wrapper.addEventListener('mouseenter', mouseenterHandler);
+function mouseenterHandler(){
     isOver = true;
-})
-wrapper.addEventListener('mousemove', (e) => {
+}
+
+wrapper.addEventListener('mousemove', mousemoveHandler)
+function mousemoveHandler(e){
     if(isDragging && isOver && (dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
         currentDragDistance = (startX - e.clientX)
         wrapper.scrollLeft = dragDistance + currentDragDistance
@@ -89,14 +115,66 @@ wrapper.addEventListener('mousemove', (e) => {
         startX = e.clientX;
         buttonActiveHandler();
     }
-})
-wrapper.addEventListener('mouseleave', (e) => {
+}
+
+
+wrapper.addEventListener('mouseleave', mouseleaveHandler)
+function mouseleaveHandler(e){
     isOver = false;
     isDragging = false;
     dragDistance += currentDragDistance;
     currentDragDistance = 0;
+}
+
+
+wrapper.addEventListener('mouseup', mouseupHandler);
+function mouseupHandler(e){
+    isDragging = false;
+    if(isOver){
+        dragDistance += currentDragDistance;
+    }
+    currentDragDistance = 0;
+    switch(true){
+        case (wrapper.scrollLeft <= 50):
+            wrapper.scrollLeft = 0;
+            break;
+        case (wrapper.scrollLeft >= (scrollLine - 50)):
+            wrapper.scrollLeft = scrollLine;
+            break;
+        default:
+            break;
+    }
+}
+//<for mouse drag computer version
+
+// for touch drag mobile version>
+wrapper.addEventListener('touchstart', (e) => {
+    scrollLine = wrapper.scrollWidth - wrapper.clientWidth;
+    isDragging = true;
+    isOver = true;
+    startX = e.touches[0].clientX;
 })
-wrapper.addEventListener('mouseup', (e) => {
+
+wrapper.addEventListener('touchmove', (e) => {
+    if(isDragging && isOver && (dragDistance + currentDragDistance) >= 0 && (dragDistance + currentDragDistance) <= scrollLine){
+        currentDragDistance = (startX - e.touches[0].clientX)
+        wrapper.scrollLeft = dragDistance + currentDragDistance
+        buttonActiveHandler();
+    }
+    else if((dragDistance + currentDragDistance) < 0){
+        dragDistance = 0;
+        currentDragDistance = 0;
+        startX = e.touches[0].clientX;
+        buttonActiveHandler();
+    }
+    else if((dragDistance + currentDragDistance) > scrollLine){
+        dragDistance = scrollLine;
+        currentDragDistance = 0;
+        startX = e.touches[0].clientX;
+        buttonActiveHandler();
+    }
+})
+wrapper.addEventListener('touchend', (e) => {
     isDragging = false;
     if(isOver){
         dragDistance += currentDragDistance;
@@ -113,6 +191,4 @@ wrapper.addEventListener('mouseup', (e) => {
             break;
     }
 })
-wrapper.addEventListener('dragend', (e) => {
-    isDragging = false;
-})
+// <for touch drag mobile version
